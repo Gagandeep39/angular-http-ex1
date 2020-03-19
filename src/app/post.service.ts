@@ -1,5 +1,5 @@
 import { Post } from './post.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, catchError } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
@@ -8,7 +8,7 @@ import { Subject, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class PostService {
-  // When ever an error occurs, it will execute next 
+  // When ever an error occurs, it will execute next
   errorSubject = new Subject<string>();
   constructor(private http: HttpClient) {}
 
@@ -36,7 +36,10 @@ export class PostService {
   fetchPost() {
     return this.http
       .get<{ [key: string]: Post }>(
-        'https://fir-contact-c6ceb.firebaseio.com/post.json'
+        'https://fir-contact-c6ceb.firebaseio.com/post.json',
+        {
+          headers: new HttpHeaders({'Custom-header': 'I Luv You'})
+        }
       )
       .pipe(
         map(responseData => {
