@@ -17,7 +17,10 @@ export class PostService {
     this.http
       .post<{ lol: string; ll: string }>(
         'https://fir-contact-c6ceb.firebaseio.com/post.json',
-        postData
+        postData,
+        {
+          observe: 'response'
+        }
       )
       .subscribe(
         responseData => {
@@ -70,3 +73,7 @@ export class PostService {
     return this.http.delete('https://fir-contact-c6ceb.firebaseio.com/post.json');
   }
 }
+
+// By defualt Http returns us only a part of the response 
+// To get complete Response, we can Enter 
+// observe: 'response' as a paramater inside get() or post()
