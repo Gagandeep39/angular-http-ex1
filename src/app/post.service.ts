@@ -34,12 +34,19 @@ export class PostService {
   }
 
   fetchPost() {
+  // To add multiple arameter
+  const customParams = new HttpParams();
+  customParams.append('param1', 'value1');
+  customParams.append('param2', 'value2');
+
     return this.http
       .get<{ [key: string]: Post }>(
         'https://fir-contact-c6ceb.firebaseio.com/post.json',
         {
           headers: new HttpHeaders({'Custom-header': 'I Luv You'}),
-          params: new HttpParams().set('print', 'value')
+          // Same as appending '?print=value' to the URL
+          // params: new HttpParams().set('print', 'value')
+          params: customParams
         }
       )
       .pipe(
