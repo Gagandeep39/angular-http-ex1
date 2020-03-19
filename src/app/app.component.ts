@@ -51,7 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isFetching = false;
         this.error = error.name;
         console.log(error.name);
-        
       },
       () => {
         this.isFetching = false;
@@ -68,6 +67,11 @@ export class AppComponent implements OnInit, OnDestroy {
       this.error = error.value;
     });
     // Send Http request
+  }
+
+  // Simly to importve the UI
+  handleError() {
+    this.error = null;
   }
 }
 // Append /post.json to store it in a folder named post in firebase
