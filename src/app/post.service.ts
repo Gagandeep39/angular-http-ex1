@@ -2,11 +2,14 @@ import { Post } from './post.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
+  // When ever an error occurs, it will execute next 
+  errorSubject = new Subject<string>();
   constructor(private http: HttpClient) {}
 
   createAndStorePost(postData: Post) {
@@ -21,6 +24,7 @@ export class PostService {
           console.log(responseData);
         },
         error => {
+          this.errorSubject.next(error.value);
           console.log('Error: ' + error);
         },
         () => {
