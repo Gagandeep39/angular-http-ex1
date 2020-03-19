@@ -14,6 +14,7 @@ export class LoggingInterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     console.log('Logging: Outgoing request');
+    console.log(req.headers);
     console.log(req.body);
 
     return next.handle(req).pipe(
