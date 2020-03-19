@@ -31,9 +31,11 @@ export class PostService {
 
   fetchPost() {
     return this.http
-      .get<{[key: string]: Post}>('https://fir-contact-c6ceb.firebaseio.com/post.json')
+      .get<{ [key: string]: Post }>(
+        'https://fir-contact-c6ceb.firebaseio.com/post.json'
+      )
       .pipe(
-        map((responseData)  => {
+        map(responseData => {
           const responseArray: Post[] = [];
           for (const key in responseData) {
             if (responseData.hasOwnProperty(key)) {
@@ -43,6 +45,9 @@ export class PostService {
           return responseArray;
         })
       );
+  }
 
+  deletePosts() {
+    return this.http.delete('https://fir-contact-c6ceb.firebaseio.com/post.json');
   }
 }
