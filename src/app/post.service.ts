@@ -1,7 +1,12 @@
 import { Post } from './post.model';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpEventType
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
 
 @Injectable({
@@ -10,12 +15,12 @@ import { Subject, throwError } from 'rxjs';
 export class PostService {
   // When ever an error occurs, it will execute next
   errorSubject = new Subject<string>();
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   createAndStorePost(postData: Post) {
     console.log(postData);
     this.http
-      .post<{ lol: string; ll: string }>(
+      .post<{ name: string; content: string }>(
         'https://fir-contact-c6ceb.firebaseio.com/post.json',
         postData,
         {
@@ -37,16 +42,16 @@ export class PostService {
   }
 
   fetchPost() {
-  // To add multiple arameter
-  const customParams = new HttpParams();
-  customParams.append('param1', 'value1');
-  customParams.append('param2', 'value2');
+    // To add multiple arameter
+    const customParams = new HttpParams();
+    customParams.append('param1', 'value1');
+    customParams.append('param2', 'value2');
 
     return this.http
       .get<{ [key: string]: Post }>(
         'https://fir-contact-c6ceb.firebaseio.com/post.json',
         {
-          headers: new HttpHeaders({'Custom-header': 'I Luv You'}),
+          headers: new HttpHeaders({ 'Custom-header': 'I Luv You' }),
           // Same as appending '?print=value' to the URL
           // params: new HttpParams().set('print', 'value')
           params: customParams
@@ -70,10 +75,21 @@ export class PostService {
   }
 
   deletePosts() {
-    return this.http.delete('https://fir-contact-c6ceb.firebaseio.com/post.json');
+    return this.http
+      .delete('https://fir-contact-c6ceb.firebaseio.com/post.json', {
+        observe: 'events'
+      })
+      .pipe(
+        tap(event => {
+          console.log(event);
+          if (event.type === HttpEventType.Sent) {
+            console.log('data sent');
+          }
+        })
+      );
   }
 }
 
-// By defualt Http returns us only a part of the response 
-// To get complete Response, we can Enter 
+// By defualt Http returns us only a part of the response
+// To get complete Response, we can Enter
 // observe: 'response' as a paramater inside get() or post()
