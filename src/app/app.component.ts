@@ -9,8 +9,12 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  loadedPosts = [];
-  fetchedPost;
+
+  // To store the rrecieved srray
+  fetchedPost: Post[] = [];
+
+  // TOvshow an indicator
+  isFetching = true;
 
   constructor(private http: HttpClient) {}
 
@@ -32,12 +36,14 @@ export class AppComponent implements OnInit {
           console.log('Error: ' + error);
         },
         () => {
+          this.isFetching = false;
           console.log('Completed');
         }
       );
   }
 
   onFetchPosts() {
+    this.isFetching = true;
     this.http
       .get<{[key: string]: Post}>('https://fir-contact-c6ceb.firebaseio.com/post.json')
       .pipe(
@@ -60,12 +66,12 @@ export class AppComponent implements OnInit {
           console.log('Error: ' + error);
         },
         () => {
+          this.isFetching = false;
           console.log('Completed');
         }
       );
     // Send Http request
   }
-
   onClearPosts() {
     // Send Http request
   }

@@ -42,16 +42,26 @@
       |
       <button
         class="btn btn-danger"
-        [disabled]="loadedPosts.length < 1"
+        [disabled]="fetchedPost.length < 1"
         (click)="onClearPosts()"
       >
-        Clear Posts
+        Clear Posts 
       </button>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-      <p>No posts available!</p>
+      <p *ngIf="fetchedPost.length < 1 && !isFetching">No posts available!</p>
+      <ul class="list-group" *ngIf="fetchedPost.length>=1 && !isFetching">
+        <li class="list-group-item" *ngFor="let item of fetchedPost">
+          <h2>{{ item.title }}</h2>
+          <p> {{ item.content }} </p>
+        </li>
+      </ul>
+      <div *ngIf="isFetching" class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
     </div>
   </div>
 </div>
+
