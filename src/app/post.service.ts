@@ -79,11 +79,12 @@ export class PostService {
   deletePosts() {
     return this.http
       .delete('https://fir-contact-c6ceb.firebaseio.com/post.json', {
-        observe: 'events',
+        observe: 'events', // On commenting this, the delte wont recieve event data
         responseType: 'json' // a replcaement to get<{respone_type}>('url)
       })
       .pipe(
         tap(event => {
+          console.log('Event in delete post: ');
           console.log(event);
           if (event.type === HttpEventType.Sent) {
             console.log('data sent');
