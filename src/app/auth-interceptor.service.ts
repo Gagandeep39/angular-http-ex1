@@ -1,6 +1,11 @@
-import { HttpInterceptor, HttpEvent } from '@angular/common/http';
+import { tap, map } from 'rxjs/operators';
+import {
+  HttpInterceptor,
+  HttpEvent,
+  HttpEventType
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, pipe } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +20,25 @@ export class AuthInterceptorService implements HttpInterceptor {
 
     // Here we are creatign a modified request by appending additional headers
     const modifiedReq = req.clone({
-        headers: req.headers.append('appendedHeader', '<3')
+      headers: req.headers.append('appendedHeader', '<3')
     });
 
     console.log('Intercepted');
-    // Here we handle the modified request
-    return next.handle(modifiedReq);
+    // Here we send the modified request
+    // Responsew can lso be manipulated
+    return next.handle(modifiedReq).pipe(
+      tap(event => {
+        if (event.type === HttpEventType.Response) {
+          console.log('Inteerceptor Response arrived: ');
+          console.log(event.body);
+        }
+      })
+      // here we returned null to requester which causes app to show empty list
+      //   map(response => {
+      //     console.log('Map data: ');
+      //     console.log(response);
+      //     return null;
+      //   })
+    );
   }
 }
