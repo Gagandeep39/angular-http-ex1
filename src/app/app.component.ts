@@ -1,3 +1,4 @@
+import { PostService } from './post.service';
 import { Post } from './post.model';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -9,14 +10,13 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-
   // To store the rrecieved srray
   fetchedPost: Post[] = [];
 
   // TOvshow an indicator
   isFetching = true;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private postService: PostService) {}
 
   ngOnInit() {
     this.onFetchPosts();
@@ -24,52 +24,25 @@ export class AppComponent implements OnInit {
 
   // Parameters -> varName: ObjectType/Structure
   onCreatePost(postData: { title: string; content: string }) {
-    console.log(postData);
+    this.postService.createAndStorePost(postData);
     // Send Http request
-    this.http
-      .post<{lol: string, ll: string}>('https://fir-contact-c6ceb.firebaseio.com/post.json', postData)
-      .subscribe(
-        responseData => {
-          console.log(responseData);
-        },
-        error => {
-          console.log('Error: ' + error);
-        },
-        () => {
-          this.isFetching = false;
-          console.log('Completed');
-        }
-      );
   }
 
   onFetchPosts() {
     this.isFetching = true;
-    this.http
-      .get<{[key: string]: Post}>('https://fir-contact-c6ceb.firebaseio.com/post.json')
-      .pipe(
-        map((responseData)  => {
-          const responseArray: Post[] = [];
-          for (const key in responseData) {
-            if (responseData.hasOwnProperty(key)) {
-              responseArray.push({ ...responseData[key], id: key });
-            }
-          }
-          return responseArray;
-        })
-      )
-      .subscribe(
-        responseData => {
-          this.fetchedPost = responseData;
-          console.log(responseData);
-        },
-        error => {
-          console.log('Error: ' + error);
-        },
-        () => {
-          this.isFetching = false;
-          console.log('Completed');
-        }
-      );
+    this.postService.fetchPost().subscribe(
+      responseData => {
+        console.log(responseData);
+        this.fetchedPost = responseData;
+      },
+      error => {
+        console.log('Error: ' + error);
+      },
+      () => {
+        this.isFetching = false;
+        console.log('Completed');
+      }
+    );
     // Send Http request
   }
   onClearPosts() {
@@ -84,9 +57,14 @@ export class AppComponent implements OnInit {
 // 2. then we will push the conent mapped with key directly (Multiple key value pairs are pushed together using '...')
 // 3. To preseve the keyof, we will add it as an additional key value pair
 // {[key: string]: Post}
-// Here key is the root value 
-// Post object is the nested structure 
+// Here key is the root value
+// Post object is the nested structure
 
 // When we specify get<{abc: string}> or .post<{[key: strig]: Post}>
 // THe subscriber will intepret the recieved data as the specified object
 // basicay <> specifies response body type
+
+// Data fetched using http is async
+// These data can be obtained in comoonent using subject subscription
+// Howver we will have t create different obervable for different operation
+// Instead we will prepare data i servie, followed by subscribing in component
