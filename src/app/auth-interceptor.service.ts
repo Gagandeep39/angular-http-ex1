@@ -13,7 +13,13 @@ export class AuthInterceptorService implements HttpInterceptor {
     // We can enable/disable is for specific URL as follow
     // if (req.url === 'www.google.com')
 
+    // Here we are creatign a modified request by appending additional headers
+    const modifiedReq = req.clone({
+        headers: req.headers.append('appendedHeader', '<3')
+    });
+
     console.log('Intercepted');
-    return next.handle(req);
+    // Here we handle the modified request
+    return next.handle(modifiedReq);
   }
 }
