@@ -1,8 +1,8 @@
 import { Post } from './post.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +47,10 @@ export class PostService {
             }
           }
           return responseArray;
+        }),
+        catchError(errorResponse => {
+          console.log('Error in in Pipe Section');
+          return throwError(errorResponse);
         })
       );
   }
