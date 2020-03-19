@@ -54,7 +54,9 @@ export class PostService {
           headers: new HttpHeaders({ 'Custom-header': 'I Luv You' }),
           // Same as appending '?print=value' to the URL
           // params: new HttpParams().set('print', 'value')
-          params: customParams
+          params: customParams,
+          // responseType: 'text' // Will cause an error as data object.data will give an eror
+          responseType: 'json' // Json is the default type and will be required 99% of the time
         }
       )
       .pipe(
