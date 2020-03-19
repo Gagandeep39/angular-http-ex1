@@ -23,10 +23,10 @@ export class AppComponent implements OnInit {
     console.log(postData);
     // Send Http request
     this.http
-      .post('https://fir-contact-c6ceb.firebaseio.com/post.json', postData)
+      .post<{lol: string, ll: string}>('https://fir-contact-c6ceb.firebaseio.com/post.json', postData)
       .subscribe(
         responseData => {
-          console.log('Response: ' + responseData);
+          console.log(responseData);
         },
         error => {
           console.log('Error: ' + error);
@@ -39,9 +39,9 @@ export class AppComponent implements OnInit {
 
   onFetchPosts() {
     this.http
-      .get('https://fir-contact-c6ceb.firebaseio.com/post.json')
+      .get<{[key: string]: Post}>('https://fir-contact-c6ceb.firebaseio.com/post.json')
       .pipe(
-        map((responseData: {[key: string]: Post})  => {
+        map((responseData)  => {
           const responseArray: Post[] = [];
           for (const key in responseData) {
             if (responseData.hasOwnProperty(key)) {
@@ -80,3 +80,7 @@ export class AppComponent implements OnInit {
 // {[key: string]: Post}
 // Here key is the root value 
 // Post object is the nested structure 
+
+// When we specify get<{abc: string}> or .post<{[key: strig]: Post}>
+// THe subscriber will intepret the recieved data as the specified object
+// basicay <> specifies response body type
