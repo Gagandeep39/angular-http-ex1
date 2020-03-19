@@ -15,7 +15,7 @@ import { Subject, throwError } from 'rxjs';
 export class PostService {
   // When ever an error occurs, it will execute next
   errorSubject = new Subject<string>();
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   createAndStorePost(postData: Post) {
     console.log(postData);
@@ -77,7 +77,8 @@ export class PostService {
   deletePosts() {
     return this.http
       .delete('https://fir-contact-c6ceb.firebaseio.com/post.json', {
-        observe: 'events'
+        observe: 'events',
+        responseType: 'json' // a replcaement to get<{respone_type}>('url)
       })
       .pipe(
         tap(event => {
