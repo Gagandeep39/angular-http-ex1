@@ -1,5 +1,5 @@
 import { Post } from './post.model';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, catchError } from 'rxjs/operators';
 import { Subject, throwError } from 'rxjs';
@@ -38,7 +38,8 @@ export class PostService {
       .get<{ [key: string]: Post }>(
         'https://fir-contact-c6ceb.firebaseio.com/post.json',
         {
-          headers: new HttpHeaders({'Custom-header': 'I Luv You'})
+          headers: new HttpHeaders({'Custom-header': 'I Luv You'}),
+          params: new HttpParams().set('print', 'value')
         }
       )
       .pipe(
