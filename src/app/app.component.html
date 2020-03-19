@@ -58,8 +58,11 @@
           <p> {{ item.content }} </p>
         </li>
       </ul>
-      <div *ngIf="isFetching" class="spinner-border text-primary" role="status">
+      <div *ngIf="isFetching && !error" class="spinner-border text-primary" role="status">
         <span class="sr-only">Loading...</span>
+      </div>
+      <div class="alert alert-danger" role="alert" *ngIf="error">
+        <strong>{{error}}</strong>
       </div>
     </div>
   </div>

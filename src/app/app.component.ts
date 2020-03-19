@@ -3,6 +3,7 @@ import { Post } from './post.model';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
+import { load } from '@angular/core/src/render3/instructions';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,8 @@ export class AppComponent implements OnInit {
 
   // TOvshow an indicator
   isFetching = true;
+
+  error = null;
 
   constructor(private http: HttpClient, private postService: PostService) {}
 
@@ -36,7 +39,8 @@ export class AppComponent implements OnInit {
         this.fetchedPost = responseData;
       },
       error => {
-        console.log('Error: ' + error);
+        this.isFetching = false;
+        this.error = error.message;
       },
       () => {
         this.isFetching = false;
@@ -46,6 +50,12 @@ export class AppComponent implements OnInit {
     // Send Http request
   }
   onClearPosts() {
+    this.postService.deletePosts().subscribe(result => {
+      this.onFetchPosts();
+    }, error => {
+      this.isFetching = false;
+      this.error = error.message;
+    });
     // Send Http request
   }
 }
